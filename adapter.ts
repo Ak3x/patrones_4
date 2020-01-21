@@ -4,9 +4,9 @@
 import { Database } from "sqlite3";
 import * as  PouchDB from "pouchdb"
 
-class AdapterFactory
+export class AdapterFactory
 {
-obetenerAdapter(tipo : string) : BDAdapter
+obtenerAdapter(tipo : string) : BDAdapter
 {
     if (tipo == "sqlite")
     {
@@ -25,14 +25,14 @@ obetenerAdapter(tipo : string) : BDAdapter
 
 
 
-interface Alumno
+export interface Alumno
 {
     codigo : string
     nombre : string
     carrera : string
 }
 
-abstract class BDAdapter
+export abstract class BDAdapter
 {
     abstract conectar()
     abstract crearEstructura()
@@ -88,7 +88,7 @@ class PouchDBAdapter extends BDAdapter
 let mainAdapter = () => {
     let tipo = process.argv[2]
     let factory : AdapterFactory = new AdapterFactory()
-    let adapter : BDAdapter = factory.obetenerAdapter(tipo)
+    let adapter : BDAdapter = factory.obtenerAdapter(tipo)
 
     /*let adapter : BDAdapter = new SQLiteAdapter()*/
     adapter.conectar()
