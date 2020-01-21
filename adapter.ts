@@ -2,6 +2,28 @@
 // $ npm install pouchdb --save
 
 import { Database } from "sqlite3";
+import * as  PouchDB from "pouchdb"
+
+class AdapterFactory
+{
+obetenerAdapter(tipo : string) : BDAdapter
+{
+    if (tipo == "sqlite")
+    {
+        return new SQLiteAdapter()
+    }else if (tipo == "pouchdb")
+    {
+        return new PouchDBAdapter()
+    }else
+    {
+        return null
+    }
+
+}
+
+}
+
+
 
 interface Alumno
 {
@@ -44,22 +66,31 @@ class SQLiteAdapter extends BDAdapter
 
 class PouchDBAdapter extends BDAdapter
 {
+    db: PouchDB.Database | null  = null
     conectar() {
-        throw new Error("Method not implemented.");
+        this.db = new PouchDB("./alumnos.db")
     }
-    crearEstructura() {
-        throw new Error("Method not implemented.");
-    }
+    crearEstructura() {}
+    
     insertarAlumno(alumno: Alumno) {
-        throw new Error("Method not implemented.");
+        let doc = {
+            codigo : alumno.codigo,
+            nombre : alumno.nombre,
+            carrera : alumno.carrera
+        }
+        this.db.put(doc)
     }
     cerrar() {
-        throw new Error("Method not implemented.");
+        this.db.close()
     }
 }
 
 let mainAdapter = () => {
-    let adapter : BDAdapter = new SQLiteAdapter()
+    let tipo = process.argv[2]
+    let factory : AdapterFactory = new AdapterFactory()
+    let adapter : BDAdapter = factory.obetenerAdapter(tipo)
+
+    /*let adapter : BDAdapter = new SQLiteAdapter()*/
     adapter.conectar()
     //adapter.crearEstructura()
     adapter.insertarAlumno({
